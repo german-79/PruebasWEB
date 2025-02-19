@@ -44,7 +44,8 @@ async function registrarPago(event) {
                 fechaPago: fechaPago,
                 importe: importe
             }),
-            headers: { "Content-Type": "application/json" }
+            headers: { "Content-Type": "application/json" },
+            mode: "no-cors"
         });
 
         console.log("📩 Respuesta recibida:", res);
