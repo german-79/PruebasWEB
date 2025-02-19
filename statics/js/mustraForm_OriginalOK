@@ -15,7 +15,6 @@ async function buscarAlumno() {
     try {
         let res = await fetch(`${API_URL_MOSTRAR}?dni=${dni}`);
         let data = await res.json();
-        let alumnoDatos = data.alumnos.find(a => a[0] == dni); // Buscas al alumno por el DNI
 
         if (!data || !data.cuotas) {
             alert("❌ No se encontraron datos.");
@@ -30,20 +29,12 @@ async function buscarAlumno() {
 
         // 🔹 Llenar los campos con los datos del alumno
         document.getElementById("nombre").value = alumno[1];
-
-        // 🔹 Asignar el valor de la cuota desde el alumno (no desde la cuota)
-        let valorCuota = alumnoDatos[4]; // Valor de la cuota de alumno
-        document.getElementById("valorCuota").value = valorCuota;
+        document.getElementById("valorCuota").value = alumno[5]; // era 5
 
         // 🔹 Buscar última cuota paga
         let cuotasAlumno = data.cuotas.filter(c => c[0] == dni);
         let ultimaCuotaPaga = cuotasAlumno.reverse().find(c => c[4] === "Pagado");
-
-        if (ultimaCuotaPaga) {
-            document.getElementById("ultimaCuota").value = `${ultimaCuotaPaga[3]} ${ultimaCuotaPaga[2]}`; // Mostrar la última cuota pagada
-        } else {
-            document.getElementById("ultimaCuota").value = "No registra pagos"; // Mensaje de no registra pagos
-        }
+        document.getElementById("ultimaCuota").value = ultimaCuotaPaga ? `${ultimaCuotaPaga[3]} ${ultimaCuotaPaga[2]}` : "No registra pagos";
 
         // 🔹 Llenar el desplegable con los meses impagos
         let selectMeses = document.getElementById("mesPago");
