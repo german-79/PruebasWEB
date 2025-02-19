@@ -1,34 +1,28 @@
 async function registrarPago(event) {
-    event.preventDefault(); // Evita que el formulario se envíe automáticamente
-
     const API_URL_ESCRIBIR = "https://script.google.com/macros/s/AKfycbzHMoY8iPCoJtHW7KgTvonewKiQFS91W0XdnDq16DchPEWfMAqamTwoZe89t9mkIW10/exec";
+    event.preventDefault();
 
     let dni = document.getElementById("dni").value.trim();
     let nombre = document.getElementById("nombre").value.trim();
     let mesPago = document.getElementById("mesPago").value.trim();
     let fechaPago = document.getElementById("fechaPago").value.trim();
     let importe = document.getElementById("importeAbonado").value.trim();
-    let btnRegistrar = document.querySelector("button[type='submit']"); // Botón dentro del formulario
+    let btnRegistrar = document.querySelector("button[type='submit']");
 
-    // Validar campos vacíos
     if (!dni || !nombre || !mesPago || !fechaPago || !importe) {
         alert("⚠️ Complete todos los campos antes de registrar el pago.");
         return;
     }
 
-    // Mostrar confirmación antes de enviar
     let confirmacion = confirm(
         `📌 **Confirmar pago:**\n\n` +
         `👤 Alumno: ${nombre}\n📆 Mes a pagar: ${mesPago}\n📅 Fecha de pago: ${fechaPago}\n💲 Monto abonado: $${importe}\n\n` +
         `¿Desea continuar?`
     );
 
-    if (!confirmacion) {
-        console.log("❌ Pago cancelado por el usuario.");
-        return; // Si el usuario cancela, no se envían los datos
-    }
+    if (!confirmacion) return;
 
-    // Bloquear botón mientras se procesa
+    // Deshabilitar botón mientras se procesa
     btnRegistrar.disabled = true;
     btnRegistrar.textContent = "Registrando...";
 
@@ -48,8 +42,6 @@ async function registrarPago(event) {
             mode: "no-cors"
         });
 
-        console.log("📩 Respuesta recibida:", res);
-
         if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
 
         let result = await res.json();
@@ -57,27 +49,27 @@ async function registrarPago(event) {
 
         if (result.success) {
             alert("✅ Pago registrado con éxito.");
-            limpiarFormulario();
+            limpiarFormulario(); // Llamamos la función para limpiar el formulario
         } else {
             alert("❌ Error en la API: " + (result.message || "Intente nuevamente."));
         }
+
     } catch (error) {
         console.error("🚨 Error en el registro de pago:", error);
         alert("❌ Error de conexión o en la API. Mire la consola para más detalles.");
     }
 
-    // Restaurar botón después del proceso
+    // Restaurar botón al estado original
     btnRegistrar.disabled = false;
     btnRegistrar.textContent = "Registrar Pago";
 }
 
-// Asociar evento al formulario
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("formPago").addEventListener("submit", registrarPago);
-});
-
-// Función para limpiar el formulario después del registro
+// 🔄 Función para limpiar el formulario después de registrar el pago
 function limpiarFormulario() {
-    document.getElementById("formPago").reset();
-    document.getElementById("dni").focus();
+    document.getElementById("dni").value = "";
+    document.getElementById("nombre").value = "";
+    document.getElementById("mesPago").innerHTML = ""; // Limpiar opciones del select
+    document.getElementById("fechaPago").value = "";
+    document.getElementById("importeAbonado").value = "";
+    document.getElementById("datosAlumno").style.display = "none"; // Ocultar sección de datos
 }

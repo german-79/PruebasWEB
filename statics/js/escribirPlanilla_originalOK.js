@@ -1,39 +1,42 @@
-//const API_URL = "https://script.google.com/macros/s/AKfycbz41VF_reqtMMXeUrTIhhu_nFdv-t4e1DRS2v-gQcK94Pwpe6ECd5fRPbaA6CMmDlpE/exec";
+//FUNCIONA OK EL ESCRIBIR SALVO QUE QUEDA COLGADO AL FINAL.... UNA PACADA
 
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("formPago").addEventListener("submit", registrarPago);
-});
 
-// 🔹 Registrar Pago en Google Sheets
 async function registrarPago(event) {
-    const API_URL_ESCRIBIR = "https://script.google.com/macros/s/AKfycbz41VF_reqtMMXeUrTIhhu_nFdv-t4e1DRS2v-gQcK94Pwpe6ECd5fRPbaA6CMmDlpE/exec";
-    event.preventDefault();
+    event.preventDefault(); // Evita que el formulario se envíe automáticamente
+
+    const API_URL_ESCRIBIR = "https://script.google.com/macros/s/AKfycbzHMoY8iPCoJtHW7KgTvonewKiQFS91W0XdnDq16DchPEWfMAqamTwoZe89t9mkIW10/exec";
 
     let dni = document.getElementById("dni").value.trim();
     let nombre = document.getElementById("nombre").value.trim();
     let mesPago = document.getElementById("mesPago").value.trim();
     let fechaPago = document.getElementById("fechaPago").value.trim();
     let importe = document.getElementById("importeAbonado").value.trim();
+    let btnRegistrar = document.querySelector("button[type='submit']"); // Botón dentro del formulario
 
+    // Validar campos vacíos
     if (!dni || !nombre || !mesPago || !fechaPago || !importe) {
         alert("⚠️ Complete todos los campos antes de registrar el pago.");
         return;
     }
 
+    // Mostrar confirmación antes de enviar
     let confirmacion = confirm(
         `📌 **Confirmar pago:**\n\n` +
         `👤 Alumno: ${nombre}\n📆 Mes a pagar: ${mesPago}\n📅 Fecha de pago: ${fechaPago}\n💲 Monto abonado: $${importe}\n\n` +
         `¿Desea continuar?`
     );
 
-    if (!confirmacion) return;
+    if (!confirmacion) {
+        console.log("❌ Pago cancelado por el usuario.");
+        return; // Si el usuario cancela, no se envían los datos
+    }
 
-    // 🔹 Desactivar botón para evitar doble envío
-    let btnRegistrar = document.getElementById("btnRegistrar");
+    // Bloquear botón mientras se procesa
     btnRegistrar.disabled = true;
     btnRegistrar.textContent = "Registrando...";
 
     try {
+        console.log("➡️ Enviando datos a la API...");
         let res = await fetch(API_URL_ESCRIBIR, {
             method: "POST",
             body: JSON.stringify({
@@ -44,30 +47,40 @@ async function registrarPago(event) {
                 fechaPago: fechaPago,
                 importe: importe
             }),
-            headers: { "Content-Type": "application/json" }
+            headers: { "Content-Type": "application/json" },
+            mode: "no-cors"
         });
 
+        console.log("📩 Respuesta recibida:", res);
+
+        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+
         let result = await res.json();
+        console.log("📄 JSON recibido:", result);
 
         if (result.success) {
             alert("✅ Pago registrado con éxito.");
             limpiarFormulario();
         } else {
-            alert("❌ Error al registrar el pago. Intente nuevamente.");
+            alert("❌ Error en la API: " + (result.message || "Intente nuevamente."));
         }
-
     } catch (error) {
-        console.error("Error al registrar el pago:", error);
-        alert("❌ Error de conexión. Intente más tarde.");
+        console.error("🚨 Error en el registro de pago:", error);
+        alert("❌ Error de conexión o en la API. Mire la consola para más detalles.");
     }
 
-    // 🔹 Reactivar botón
+    // Restaurar botón después del proceso
     btnRegistrar.disabled = false;
     btnRegistrar.textContent = "Registrar Pago";
 }
 
-// 🔹 Limpiar Formulario después del registro y volver al inicio
+// Asociar evento al formulario
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("formPago").addEventListener("submit", registrarPago);
+});
+
+// Función para limpiar el formulario después del registro
 function limpiarFormulario() {
     document.getElementById("formPago").reset();
-    document.getElementById("datosAlumno").style.display = "none"; // Oculta los datos del alumno
+    document.getElementById("dni").focus();
 }
