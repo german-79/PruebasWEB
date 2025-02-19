@@ -2,18 +2,21 @@
 <html lang="es">
 
 <head>
-    
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar Pago</title>
     <link rel="stylesheet" href="../statics/css/index.css">
-    
+
 
 </head>
 
 <body>
     <header>
         <h1>Registrar Pago</h1>
+        <a href="../index.html">
+            <button onclick="volverAlInicio()">Volver</button>
+        </a>
     </header>
 
     <section>
@@ -23,6 +26,7 @@
             <div class="dni-container">
                 <input type="number" id="dni" required>
                 <button type="button" id="btnBuscar">Buscar</button>
+
             </div>
 
             <!-- Contenedor de datos del alumno (oculto hasta que se busque) -->
@@ -67,12 +71,12 @@
     </section>
 
     <footer>
-        <button onclick="volverAlInicio()">Volver</button>
+        <p>&copy; 2025 By GOP</p>
     </footer>
 
     <script src="../statics/js/muestraForm.js"></script>
     <script src="../statics/js/escribirPlanilla.js"></script>
-    
+
 </body>
 
 </html>

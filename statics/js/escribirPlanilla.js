@@ -5,7 +5,7 @@ async function registrarPago(event) {
 
     let dni = document.getElementById("dni").value.trim();
     let nombre = document.getElementById("nombre").value.trim();
-    let mesPago = document.getElementById("mesPago").value.trim();
+    let mesPago = document.getElementById("mesPago").value.trim().split(" ")[0];
     let fechaPago = document.getElementById("fechaPago").value.trim();
     let importe = document.getElementById("importeAbonado").value.trim();
     let btnRegistrar = document.querySelector("button[type='submit']");
@@ -65,4 +65,5 @@ document.addEventListener("DOMContentLoaded", function () {
 function limpiarFormulario() {
     document.getElementById("formPago").reset();
     document.getElementById("dni").focus();
+    document.getElementById("datosAlumno").style.display = "none"; // Oculta los datos del alumno
 }
