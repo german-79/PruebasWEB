@@ -1,13 +1,14 @@
 async function registrarPago(event) {
-    event.preventDefault(); // Evita recargar la página
+    event.preventDefault(); // Evita que el formulario se envíe automáticamente
 
-    const API_URL_ESCRIBIR = "https://script.google.com/macros/s/AKfycbz41VF_reqtMMXeUrTIhhu_nFdv-t4e1DRS2v-gQcK94Pwpe6ECd5fRPbaA6CMmDlpE/exec";
+    const API_URL_ESCRIBIR = "https://script.google.com/macros/s/AKfycbzHMoY8iPCoJtHW7KgTvonewKiQFS91W0XdnDq16DchPEWfMAqamTwoZe89t9mkIW10/exec";
 
     let dni = document.getElementById("dni").value.trim();
     let nombre = document.getElementById("nombre").value.trim();
     let mesPago = document.getElementById("mesPago").value.trim();
     let fechaPago = document.getElementById("fechaPago").value.trim();
     let importe = document.getElementById("importeAbonado").value.trim();
+    let btnRegistrar = document.querySelector("button[type='submit']"); // Botón dentro del formulario
 
     // Validar campos vacíos
     if (!dni || !nombre || !mesPago || !fechaPago || !importe) {
@@ -15,50 +16,43 @@ async function registrarPago(event) {
         return;
     }
 
-    // Convertir `importe` a número
-    let importeNumerico = parseFloat(importe);
-    if (isNaN(importeNumerico) || importeNumerico <= 0) {
-        alert("⚠️ Ingrese un importe válido.");
-        return;
-    }
-
-    // Confirmación antes de enviar
+    // Mostrar confirmación antes de enviar
     let confirmacion = confirm(
         `📌 **Confirmar pago:**\n\n` +
-        `👤 Alumno: ${nombre}\n📆 Mes a pagar: ${mesPago}\n📅 Fecha de pago: ${fechaPago}\n💲 Monto abonado: $${importeNumerico}\n\n` +
+        `👤 Alumno: ${nombre}\n📆 Mes a pagar: ${mesPago}\n📅 Fecha de pago: ${fechaPago}\n💲 Monto abonado: $${importe}\n\n` +
         `¿Desea continuar?`
     );
 
     if (!confirmacion) {
         console.log("❌ Pago cancelado por el usuario.");
-        return;
+        return; // Si el usuario cancela, no se envían los datos
     }
 
-    let btnRegistrar = document.querySelector("button[type='submit']");
+    // Bloquear botón mientras se procesa
     btnRegistrar.disabled = true;
     btnRegistrar.textContent = "Registrando...";
 
-    // Construir JSON con datos correctos
-    let data = {
-        accion: "registrarPago",
-        dni: dni,
-        nombre: nombre,
-        mesPago: mesPago,
-        importe: importeNumerico, // Ahora es un número
-        fechaPago: fechaPago
-    };
-
-    console.log("📤 Enviando datos:", JSON.stringify(data));
-
     try {
+        console.log("➡️ Enviando datos a la API...");
         let res = await fetch(API_URL_ESCRIBIR, {
             method: "POST",
-            body: JSON.stringify(data),
+            body: JSON.stringify({
+                accion: "registrarPago",
+                dni: dni,
+                nombre: nombre,
+                mesPago: mesPago,
+                fechaPago: fechaPago,
+                importe: importe
+            }),
             headers: { "Content-Type": "application/json" }
         });
 
+        console.log("📩 Respuesta recibida:", res);
+
+        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+
         let result = await res.json();
-        console.log("📩 Respuesta recibida:", result);
+        console.log("📄 JSON recibido:", result);
 
         if (result.success) {
             alert("✅ Pago registrado con éxito.");
@@ -67,13 +61,19 @@ async function registrarPago(event) {
             alert("❌ Error en la API: " + (result.message || "Intente nuevamente."));
         }
     } catch (error) {
-        console.error("🚨 Error en la solicitud:", error);
-        alert("❌ Error de conexión o en la API. Verifique la consola.");
+        console.error("🚨 Error en el registro de pago:", error);
+        alert("❌ Error de conexión o en la API. Mire la consola para más detalles.");
     }
 
+    // Restaurar botón después del proceso
     btnRegistrar.disabled = false;
     btnRegistrar.textContent = "Registrar Pago";
 }
+
+// Asociar evento al formulario
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("formPago").addEventListener("submit", registrarPago);
+});
 
 // Función para limpiar el formulario después del registro
 function limpiarFormulario() {
