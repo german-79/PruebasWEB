@@ -1,0 +1,87 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+header, footer {
+    text-align: center;
+    padding: 10px;
+    background: url("../img/bandera.webp") no-repeat center center;
+    background-size: cover;
+    color: white;
+}
+
+h1, h2, h3 {
+    text-align: center;
+}
+
+select, ul {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+section {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    margin-bottom: 15px;
+}
+
+/* 🔹 Ajuste para la lista de alumnos en mora */
+#listaMora {
+    padding: 0;
+    list-style: none;
+    word-wrap: break-word; /* Rompe palabras largas */
+    overflow-x: auto; /* Agrega scroll horizontal si es necesario */
+}
+
+/* 🔹 Ajuste de cada ítem de la lista */
+#listaMora li {
+    font-size: 16px;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    white-space: normal; /* Evita que el texto se salga */
+    overflow-wrap: break-word; /* Corta el texto si es necesario */
+}
+
+/* 🔹 Botón de volver */
+#volver {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 16px;
+    background-color: #003366;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#volver:hover {
+    background-color: #002244;
+}
+
+/* 🔹 Estilos Responsive */
+@media (max-width: 600px) {
+    body {
+        max-width: 100%;
+        padding: 10px;
+    }
+
+    section {
+        padding: 10px;
+    }
+
+    #listaMora li {
+        font-size: 14px;
+    }
+
+    #volver {
+        font-size: 14px;
+    }
+}
