@@ -1,5 +1,5 @@
 async function registrarPago(event) {
-    event.preventDefault(); // Evita que el formulario se envíe automáticamente
+    event.preventDefault(); // Evita recargar la página
 
     const API_URL_ESCRIBIR = "https://script.google.com/macros/s/AKfycbz41VF_reqtMMXeUrTIhhu_nFdv-t4e1DRS2v-gQcK94Pwpe6ECd5fRPbaA6CMmDlpE/exec";
 
@@ -8,7 +8,6 @@ async function registrarPago(event) {
     let mesPago = document.getElementById("mesPago").value.trim();
     let fechaPago = document.getElementById("fechaPago").value.trim();
     let importe = document.getElementById("importeAbonado").value.trim();
-    let btnRegistrar = document.querySelector("button[type='submit']"); // Botón dentro del formulario
 
     // Validar campos vacíos
     if (!dni || !nombre || !mesPago || !fechaPago || !importe) {
@@ -16,43 +15,50 @@ async function registrarPago(event) {
         return;
     }
 
-    // Mostrar confirmación antes de enviar
+    // Convertir `importe` a número
+    let importeNumerico = parseFloat(importe);
+    if (isNaN(importeNumerico) || importeNumerico <= 0) {
+        alert("⚠️ Ingrese un importe válido.");
+        return;
+    }
+
+    // Confirmación antes de enviar
     let confirmacion = confirm(
         `📌 **Confirmar pago:**\n\n` +
-        `👤 Alumno: ${nombre}\n📆 Mes a pagar: ${mesPago}\n📅 Fecha de pago: ${fechaPago}\n💲 Monto abonado: $${importe}\n\n` +
+        `👤 Alumno: ${nombre}\n📆 Mes a pagar: ${mesPago}\n📅 Fecha de pago: ${fechaPago}\n💲 Monto abonado: $${importeNumerico}\n\n` +
         `¿Desea continuar?`
     );
 
     if (!confirmacion) {
         console.log("❌ Pago cancelado por el usuario.");
-        return; // Si el usuario cancela, no se envían los datos
+        return;
     }
 
-    // Bloquear botón mientras se procesa
+    let btnRegistrar = document.querySelector("button[type='submit']");
     btnRegistrar.disabled = true;
     btnRegistrar.textContent = "Registrando...";
 
+    // Construir JSON con datos correctos
+    let data = {
+        accion: "registrarPago",
+        dni: dni,
+        nombre: nombre,
+        mesPago: mesPago,
+        importe: importeNumerico, // Ahora es un número
+        fechaPago: fechaPago
+    };
+
+    console.log("📤 Enviando datos:", JSON.stringify(data));
+
     try {
-        console.log("➡️ Enviando datos a la API...");
         let res = await fetch(API_URL_ESCRIBIR, {
             method: "POST",
-            body: JSON.stringify({
-                accion: "registrarPago",
-                dni: dni,
-                nombre: nombre,
-                mesPago: mesPago,
-                fechaPago: fechaPago,
-                importe: importe
-            }),
+            body: JSON.stringify(data),
             headers: { "Content-Type": "application/json" }
         });
 
-        console.log("📩 Respuesta recibida:", res);
-
-        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-
         let result = await res.json();
-        console.log("📄 JSON recibido:", result);
+        console.log("📩 Respuesta recibida:", result);
 
         if (result.success) {
             alert("✅ Pago registrado con éxito.");
@@ -61,19 +67,13 @@ async function registrarPago(event) {
             alert("❌ Error en la API: " + (result.message || "Intente nuevamente."));
         }
     } catch (error) {
-        console.error("🚨 Error en el registro de pago:", error);
-        alert("❌ Error de conexión o en la API. Mire la consola para más detalles.");
+        console.error("🚨 Error en la solicitud:", error);
+        alert("❌ Error de conexión o en la API. Verifique la consola.");
     }
 
-    // Restaurar botón después del proceso
     btnRegistrar.disabled = false;
     btnRegistrar.textContent = "Registrar Pago";
 }
-
-// Asociar evento al formulario
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("formPago").addEventListener("submit", registrarPago);
-});
 
 // Función para limpiar el formulario después del registro
 function limpiarFormulario() {
