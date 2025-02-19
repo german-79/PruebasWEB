@@ -15,61 +15,61 @@
 <body>
     <header>
         <h1>Registrar Pago</h1>
-        
+
     </header>
-<main>
-    <section>
-        <form id="formPago">
-            <!-- DNI y Botón Buscar -->
-            <label for="dni">DNI del Alumno:</label>
-            <div class="dni-container">
-                <input type="number" id="dni" required>
-                <button type="button" id="btnBuscar">Buscar</button>
+    <main>
+        <section>
+            <form id="formPago">
+                <!-- DNI y Botón Buscar -->
+                <label for="dni">DNI del Alumno:</label>
+                <div class="dni-container">
+                    <input type="number" id="dni" required>
+                    <button type="button" id="btnBuscar">Buscar</button>
 
-            </div>
+                </div>
 
-            <!-- Contenedor de datos del alumno (oculto hasta que se busque) -->
-            <div id="datosAlumno" style="display: none;">
+                <!-- Contenedor de datos del alumno (oculto hasta que se busque) -->
+                <div id="datosAlumno" style="display: none;">
 
-                <section class="form-section">
-                    <label for="nombre">Nombre del Alumno:</label>
-                    <input type="text" id="nombre" readonly>
-                </section>
+                    <section class="form-section">
+                        <label for="nombre">Nombre del Alumno:</label>
+                        <input type="text" id="nombre" readonly>
+                    </section>
 
-                <section class="form-section">
-                    <label for="ultimaCuota">Última Cuota Paga:</label>
-                    <input type="text" id="ultimaCuota" readonly>
-                </section>
+                    <section class="form-section">
+                        <label for="ultimaCuota">Última Cuota Paga:</label>
+                        <input type="text" id="ultimaCuota" readonly>
+                    </section>
 
-                <section class="form-section">
-                    <label for="valorCuota">Valor de la Cuota:</label>
-                    <input type="text" id="valorCuota" readonly>
-                </section>
+                    <section class="form-section">
+                        <label for="valorCuota">Valor de la Cuota:</label>
+                        <input type="text" id="valorCuota" readonly>
+                    </section>
 
-                <section class="form-section">
-                    <label for="importeAbonado">Importe Abonado:</label>
-                    <input type="number" id="importeAbonado" required>
-                </section>
+                    <section class="form-section">
+                        <label for="importeAbonado">Importe Abonado:</label>
+                        <input type="number" id="importeAbonado" required>
+                    </section>
 
-                <section class="form-section">
-                    <label for="fechaPago">Fecha de Pago:</label>
-                    <input type="date" id="fechaPago" required>
-                </section>
+                    <section class="form-section">
+                        <label for="fechaPago">Fecha de Pago:</label>
+                        <input type="date" id="fechaPago" required>
+                    </section>
 
-                <section class="form-section">
-                    <label for="mesPago">Mes a Pagar:</label>
-                    <select id="mesPago" required></select>
-                </section>
+                    <section class="form-section">
+                        <label for="mesPago">Mes a Pagar:</label>
+                        <select id="mesPago" required></select>
+                    </section>
 
-                <section class="form-section">
-                    <button type="submit">Registrar Pago</button>
-                </section>
+                    <section class="form-section">
+                        <button type="submit">Registrar Pago</button>
+                    </section>
 
-            </div>
-        </form>
-    </section>
-    <a href="../index.html" class="btn-volver">Volver</a>
-</main>
+                </div>
+            </form>
+        </section>
+        <a href="../index.html" class="btn-volver">Volver</a>
+    </main>
     <footer>
         <p>&copy; 2025 By GOP</p>
     </footer>

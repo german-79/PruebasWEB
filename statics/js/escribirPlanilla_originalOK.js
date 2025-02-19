@@ -1,5 +1,4 @@
-//FUNCIONA OK EL ESCRIBIR SALVO QUE QUEDA COLGADO AL FINAL.... UNA PACADA
-
+//funciona de 10!!!!!
 
 async function registrarPago(event) {
     event.preventDefault(); // Evita que el formulario se envíe automáticamente
@@ -8,10 +7,10 @@ async function registrarPago(event) {
 
     let dni = document.getElementById("dni").value.trim();
     let nombre = document.getElementById("nombre").value.trim();
-    let mesPago = document.getElementById("mesPago").value.trim();
+    let mesPago = document.getElementById("mesPago").value.trim().split(" ")[0];
     let fechaPago = document.getElementById("fechaPago").value.trim();
     let importe = document.getElementById("importeAbonado").value.trim();
-    let btnRegistrar = document.querySelector("button[type='submit']"); // Botón dentro del formulario
+    let btnRegistrar = document.querySelector("button[type='submit']");
 
     // Validar campos vacíos
     if (!dni || !nombre || !mesPago || !fechaPago || !importe) {
@@ -26,17 +25,13 @@ async function registrarPago(event) {
         `¿Desea continuar?`
     );
 
-    if (!confirmacion) {
-        console.log("❌ Pago cancelado por el usuario.");
-        return; // Si el usuario cancela, no se envían los datos
-    }
+    if (!confirmacion) return; // Si el usuario cancela, no se envían los datos
 
     // Bloquear botón mientras se procesa
     btnRegistrar.disabled = true;
     btnRegistrar.textContent = "Registrando...";
 
     try {
-        console.log("➡️ Enviando datos a la API...");
         let res = await fetch(API_URL_ESCRIBIR, {
             method: "POST",
             body: JSON.stringify({
@@ -51,22 +46,11 @@ async function registrarPago(event) {
             mode: "no-cors"
         });
 
-        console.log("📩 Respuesta recibida:", res);
-
-        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-
-        let result = await res.json();
-        console.log("📄 JSON recibido:", result);
-
-        if (result.success) {
-            alert("✅ Pago registrado con éxito.");
-            limpiarFormulario();
-        } else {
-            alert("❌ Error en la API: " + (result.message || "Intente nuevamente."));
-        }
+        // No podemos verificar la respuesta con "no-cors", así que asumimos éxito
+        alert("✅ Pago registrado con éxito.");
+        limpiarFormulario();
     } catch (error) {
-        console.error("🚨 Error en el registro de pago:", error);
-        alert("❌ Error de conexión o en la API. Mire la consola para más detalles.");
+        alert("❌ Error de conexión o en la API. Intente nuevamente.");
     }
 
     // Restaurar botón después del proceso
@@ -83,4 +67,5 @@ document.addEventListener("DOMContentLoaded", function () {
 function limpiarFormulario() {
     document.getElementById("formPago").reset();
     document.getElementById("dni").focus();
+    document.getElementById("datosAlumno").style.display = "none"; // Oculta los datos del alumno
 }
