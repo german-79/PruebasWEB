@@ -35,14 +35,16 @@ input, select {
 
 /* 🔹 Botones */
 button {
-    padding: 12px;
-    background-color: #003366;
+    background-color: #cc0000; /* Rojo oscuro */
     color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
+    width: 250px; /* Mantiene el tamaño */
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
     text-align: center;
+    display: block;
+    margin: 20px auto; /* Lo centra horizontalmente */
+    transition: 0.3s;
 }
 
 button:hover {
